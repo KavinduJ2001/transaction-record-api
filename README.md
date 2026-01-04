@@ -1,4 +1,4 @@
-# Scalable Fintech Transaction Management API
+# Secure Transaction Management API
 
 A high-performance RESTful backend API designed to handle secure user authentication and financial transaction management. This system ensures data integrity using ACID-compliant database transactions and secures user access via JWT authentication.
 
