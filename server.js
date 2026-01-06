@@ -2,6 +2,7 @@ import "dotenv/config"; // Load .env variables
 import express from "express";
 import pool from "./db.js"; //Importing this triggers the database connection!
 import authRoutes from "./routes/authRoutes.js";
+import walletRoutes from "./routes/walletRoutes.js";
 
 const app = express();
 const PORT = process.env.PORT;
@@ -11,6 +12,8 @@ const PORT = process.env.PORT;
 app.use(express.json());
 
 app.use("/api/auth", authRoutes);
+
+app.use("/api/wallet", walletRoutes);
 
 // A simple route to check if the server is alive
 app.get("/", (req, res) => {
