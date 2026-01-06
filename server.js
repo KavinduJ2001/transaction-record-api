@@ -1,6 +1,7 @@
-import 'dotenv/config'; // Load .env variables
-import express from 'express';
-import pool from './db.js'; // <-- Importing this triggers the database connection!
+import "dotenv/config"; // Load .env variables
+import express from "express";
+import pool from "./db.js"; //Importing this triggers the database connection!
+import authRoutes from "./routes/authRoutes.js";
 
 const app = express();
 const PORT = process.env.PORT;
@@ -9,12 +10,14 @@ const PORT = process.env.PORT;
 // Without this, req.body will be undefined.
 app.use(express.json());
 
+app.use("/api/auth", authRoutes);
+
 // A simple route to check if the server is alive
-app.get('/', (req, res) => {
-    res.json({ message: "Fintech API is Running!" });
+app.get("/", (req, res) => {
+  res.json({ message: "Fintech API is Running!" });
 });
 
 // Start listening for traffic
 app.listen(PORT, () => {
-    console.log(`🚀 Server running on port ${PORT}`);
+  console.log(`🚀 Server running on port ${PORT}`);
 });
