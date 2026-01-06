@@ -1,5 +1,6 @@
 import bcrypt from "bcrypt";
 import pool from "../db.js";
+import jwt from "jsonwebtoken";
 
 export const registerUser = async (req, res) => {
   const { username, email, password } = req.body;
@@ -51,5 +52,49 @@ export const registerUser = async (req, res) => {
     res.status(500).json({
       error: "Server Error!!",
     });
+  }
+};
+
+export const loginUser = async (req, res) => {
+  const { email, password } = req.body;
+
+  try {
+    const userQuery = await pool.query("SELECT * FROM users WHERE email=$1", [
+      email,
+    ]);
+
+    if (userQuery.rows.length === 0) {
+      return res.status(400).json({ error: "Invalid email or password" });
+    }
+
+    const user = userQuery.rows[0];
+
+    // Check Password (Compare plain text vs Hash)
+    const validPassword = await bcrypt.compare(password, user.password_hash);
+    if (!validPassword) {
+      return res.status(400).json({ error: "Invalid email or password" });
+    }
+
+    // Generate JWT Token
+    const token = jwt.sign(
+      { id: user.id, username: user.username },
+      process.env.JWT_SECRET,
+      { expiresIn: "1h" }
+    );
+
+    res.json({
+      token: token,
+      user: {
+        id: user.id,
+        username: user.username,
+        email: user.email,
+      },
+    });
+
+    // console.log(validPassword);
+    // const userPassword
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({ error: "Server Error!!" });
   }
 };
