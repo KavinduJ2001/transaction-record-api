@@ -3,7 +3,7 @@
 A high-performance RESTful backend API designed to handle secure user authentication and financial transaction management. This system ensures data integrity using ACID-compliant database transactions and secures user access via JWT authentication.
 
 ## Project Status
-**Current Status:** 🚧 Active Development (Self-Initiated Project)
+**Current Status:** Active Development
 
 ## Tech Stack
 - **Runtime:** Node.js
