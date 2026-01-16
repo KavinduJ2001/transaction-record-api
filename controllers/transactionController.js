@@ -77,3 +77,38 @@ export const transferMoney = async (req, res) => {
         client.release(); // Release the connection back to the pool
     }
 };
+
+// GET TRANSACTION HISTORY
+export const getTransactionHistory = async (req, res) => {
+    try {
+        const userId = req.user.id; // From Middleware
+
+        // 1. Get the User's Wallet ID
+        const walletRes = await pool.query(
+            'SELECT id FROM wallets WHERE user_id = $1',
+            [userId]
+        );
+        
+        if (walletRes.rows.length === 0) {
+            return res.status(404).json({ error: "Wallet not found" });
+        }
+        
+        const walletId = walletRes.rows[0].id;
+
+        // 2. Find all transactions where this wallet was Sender OR Receiver
+        // ORDER BY created_at DESC ensures the newest transactions show first
+        const historyQuery = `
+            SELECT * FROM transactions 
+            WHERE sender_wallet_id = $1 OR receiver_wallet_id = $1 
+            ORDER BY created_at DESC
+        `;
+        
+        const history = await pool.query(historyQuery, [walletId]);
+
+        res.json(history.rows);
+
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).json({ error: "Server Error" });
+    }
+};
