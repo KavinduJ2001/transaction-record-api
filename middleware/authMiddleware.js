@@ -14,12 +14,9 @@ export const authenticateToken = async (req, res, next) => {
 
   jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
     if (err) {
-      console.log("❌ Token Verification Failed:");
-      console.log("--> Error Message:", err.message); // Will tell us "jwt malformed" or "invalid signature"
-      console.log("--> Token Received:", token); // Check if it has extra quotes '"eyJ..."'
       return res.status(403).json({ error: "Invalid or Expired token" });
     }
-    console.log(user);
+
     req.user = user;
 
     next();
